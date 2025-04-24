@@ -2,6 +2,9 @@
 
 MySQL 데이터베이스와 웹을 연동하여 작동하는 테스트 프로젝트입니다.
 
+## 환경 구축 실행 방법
+- chmod +x setup_web_db.sh # 이건 잘 모르겠음 ㅎ
+- ./setup_web_db.sh # 이거 치심 다 됨
 ## 📦 구성 파일
 - OS : ubuntu
 - `index.php` : DB에서 데이터를 조회하여 테이블 형태로 출력  
