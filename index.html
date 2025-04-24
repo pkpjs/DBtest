@@ -3,31 +3,56 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>간단한 HTML 예시</title>
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>DBtest</title>
+    <!-- 스타일 추가 -->
+    <link rel="stylesheet" href="styles.css">  <!-- 이 파일은 나중에 스타일을 추가할 때 사용 -->
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #007BFF;
+            color: white;
+            padding: 15px;
+            text-align: center;
+        }
+        main {
+            padding: 20px;
+        }
+        footer {
+            background-color: #333;
+            color: white;
+            text-align: center;
+            padding: 10px;
+            position: fixed;
+            width: 100%;
+            bottom: 0;
+        }
+    </style>
 </head>
 <body>
+    <!-- 헤더 영역 -->
     <header>
-        <h1>안녕하세요, HTML!</h1>
+        <h1>DBtest 프로젝트</h1>
+        <p>GitHub Pages로 호스팅 중인 웹사이트</p>
     </header>
-    <nav>
-        <ul>
-            <li><a href="#">홈</a></li>
-            <li><a href="#">소개</a></li>
-            <li><a href="#">연락처</a></li>
-        </ul>
-    </nav>
+
+    <!-- 메인 콘텐츠 영역 -->
     <main>
-        <section>
-            <h2>소개</h2>
-            <p>이 페이지는 HTML로 작성된 간단한 예시입니다.</p>
-        </section>
-        <section>
-            <h2>목표</h2>
-            <p>HTML의 기본 구조를 이해하는 것입니다.</p>
-        </section>
+        <h2>환영합니다!</h2>
+        <p>이 사이트는 DBtest 프로젝트에 대한 설명을 포함하는 웹사이트입니다.</p>
+        <p>더 많은 정보는 아래 버튼을 통해 확인할 수 있습니다.</p>
+        <a href="https://github.com/pkpjs/DBtest.github.io" target="_blank" style="display:inline-block; padding:10px 20px; background-color:#007BFF; color:white; text-decoration:none; border-radius:5px;">GitHub 레포지토리 보기</a>
     </main>
+
+    <!-- 푸터 영역 -->
     <footer>
-        <p>&copy; 2025 나의 웹사이트</p>
+        <p>&copy; 2025 DBtest 프로젝트. All rights reserved.</p>
     </footer>
 </body>
 </html>
