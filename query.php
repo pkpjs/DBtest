@@ -1,51 +1,120 @@
 <?php
-$mysqli = new mysqli("localhost", "root", "root1234", "testdb");
-$result = null;
-$error = null;
-
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $sql = $_POST["sql"];
-    if (!empty($sql)) {
-        try {
-            // SQL 쿼리 실행
-            $result = $mysqli->query($sql);
-        } catch (Exception $e) {
-            $error = $e->getMessage();
-        }
-    }
-}
+include 'db.php';
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
-    <title>SQL 쿼리 실습</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>SQL 쿼리 실행</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f4;
+            padding: 30px;
+        }
+        a {
+            text-decoration: none;
+            color: #0077cc;
+        }
+        textarea {
+            width: 100%;
+            height: 120px;
+            font-family: monospace;
+            padding: 10px;
+            font-size: 14px;
+            margin-bottom: 10px;
+        }
+        input[type="submit"] {
+            background-color: #0077cc;
+            color: white;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        table {
+            border-collapse: collapse;
+            margin-top: 20px;
+            width: 100%;
+            background-color: white;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 10px;
+            text-align: left;
+        }
+        th {
+            background-color: #0077cc;
+            color: white;
+        }
+        .query-result, .error-debug {
+            background-color: #fff;
+            border: 1px solid #ccc;
+            padding: 15px;
+            margin-top: 15px;
+            border-radius: 5px;
+            font-family: monospace;
+        }
+        .success {
+            color: green;
+        }
+        .error {
+            color: red;
+        }
+    </style>
 </head>
-<body class="container mt-5">
-    <h1 class="mb-4">🧪 SQL 쿼리 실습</h1>
+<body>
 
-    <!-- 쿼리문 가이드 추가 -->
-    <div class="alert alert-info">
-        <h4 class="alert-heading">쿼리문 예시</h4>
-        <p>새로운 테이블을 만들거나 데이터를 추가하려면 아래 예시들을 참고해 주세요.</p>
-        <ul>
-            <li><code>CREATE TABLE 테이블명 (열1 자료형, 열2 자료형);</code> - 새 테이블 생성</li>
-            <li><code>INSERT INTO 테이블명 (열1, 열2) VALUES (값1, 값2);</code> - 데이터 삽입</li>
-            <li><code>SELECT * FROM 테이블명;</code> - 테이블의 모든 데이터 조회</li>
-        </ul>
-    </div>
+<a href="index.php">← 메인으로 돌아가기</a>
 
-    <!-- SQL 입력 폼 -->
-    <form method="POST">
-        <textarea name="sql" class="form-control mb-3" rows="4" placeholder="예: CREATE TABLE test (id INT PRIMARY KEY, name VARCHAR(100));" required><?= isset($_POST['sql']) ? htmlspecialchars($_POST['sql']) : '' ?></textarea>
-        <button type="submit" class="btn btn-primary">실행</button>
-    </form>
+<h2>💻 SQL 쿼리 입력</h2>
+<form method="post">
+    <textarea name="query" placeholder="예: SELECT * FROM users;"></textarea><br>
+    <input type="submit" value="실행">
+</form>
 
-    <?php if ($error): ?>
-        <div class="alert alert-danger mt-4">❌ 오류: <?= htmlspecialchars($error) ?></div>
-    <?php elseif ($result): ?>
-        <div class="alert alert-success mt-4">✅ 쿼리 실행 성공</div>
-    <?php endif; ?>
+<?php
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    $query = $_POST["query"];
+
+    echo "<div class='query-result'><strong>입력한 쿼리문:</strong><br><code>" . htmlspecialchars($query) . "</code></div>";
+
+    $result = mysqli_query($conn, $query);
+
+    if ($result) {
+        echo "<p class='success'>✅ 쿼리 실행 성공!</p>";
+
+        if (stripos(trim($query), "select") === 0) {
+            if (mysqli_num_rows($result) > 0) {
+                echo "<table><tr>";
+                while ($fieldinfo = mysqli_fetch_field($result)) {
+                    echo "<th>{$fieldinfo->name}</th>";
+                }
+                echo "</tr>";
+
+                while ($row = mysqli_fetch_assoc($result)) {
+                    echo "<tr>";
+                    foreach ($row as $value) {
+                        echo "<td>" . htmlspecialchars($value) . "</td>";
+                    }
+                    echo "</tr>";
+                }
+                echo "</table>";
+            } else {
+                echo "<p>결과가 없습니다.</p>";
+            }
+        }
+    } else {
+        echo "<div class='error-debug'>";
+        echo "<p class='error'>❌ 쿼리 실행 실패</p>";
+        echo "<strong>MySQL 오류 메시지:</strong><br><code>" . mysqli_error($conn) . "</code>";
+        echo "</div>";
+    }
+}
+?>
+
 </body>
 </html>

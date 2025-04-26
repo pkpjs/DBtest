@@ -1,36 +1,92 @@
 <?php
-$mysqli = new mysqli("localhost", "root", "root1234", "testdb");
-$tables_result = $mysqli->query("SHOW TABLES");
-
-if (!$tables_result) {
-    die("Query failed: " . $mysqli->error);
-}
+include 'db.php';
 ?>
 
 <!DOCTYPE html>
-<html>
+<html lang="ko">
 <head>
-    <title>테이블 목록 보기</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta charset="UTF-8">
+    <title>DB 테이블 목록</title>
+    <script>
+        // 페이지 로드 시 sessionStorage 값을 확인하여 새로 고침 여부를 결정
+        window.onload = function() {
+            // sessionStorage에 "refreshed" 키가 있는지 확인
+            if (!sessionStorage.getItem('refreshed')) {
+                // 페이지 로드 시 새로 고침
+                sessionStorage.setItem('refreshed', 'true');
+                location.reload();  // 페이지 새로 고침
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 20px;
+        }
+        h2 {
+            color: #0077cc;
+            text-align: center;
+        }
+        a {
+            color: #0077cc;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            margin: 8px 0;
+        }
+        .link-container {
+            text-align: center;
+            margin: 20px 0;
+        }
+        .table-list {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        .table-list ul {
+            padding-left: 20px;
+        }
+    </style>
 </head>
-<body class="container mt-5">
-    <h1 class="mb-4">📄 테이블 목록</h1>
-    
-    <!-- query.php로 이동할 수 있는 링크 추가 -->
-    <div class="alert alert-info">
-        <h4 class="alert-heading">새로운 테이블 만들기</h4>
-        <p>테이블을 새로 만들거나 데이터베이스에 쿼리문을 실행하고 싶다면, 아래 링크를 클릭하여 SQL 쿼리문을 입력해 주세요.</p>
-        <a href="query.php" class="btn btn-primary">SQL 쿼리문 입력하기</a>
-    </div>
+<body>
 
-    <ul class="list-group">
-        <?php while ($table = $tables_result->fetch_row()): ?>
-            <li class="list-group-item">
-                <a href="view_table.php?table=<?= $table[0] ?>"><?= htmlspecialchars($table[0]) ?></a>
-            </li>
-        <?php endwhile; ?>
-    </ul>
+<h2>📋 현재 데이터베이스 테이블 목록</h2>
 
-    <a href="query.php" class="btn btn-success mt-3">✍️ 새 테이블 생성</a>
+<div class="link-container">
+    <a href="query.php">→ 쿼리 직접 실행하러 가기</a> |
+    <a href="sql.php">→ SQL 예시 보기</a>
+</div>
+
+<br>
+
+<div class="table-list">
+    <?php
+    // 테이블 목록 가져오기
+    $tables = mysqli_query($conn, "SHOW TABLES");
+
+    if ($tables) {
+        echo "<ul>";
+        while ($row = mysqli_fetch_array($tables)) {
+            $table = $row[0];
+            echo "<li><a href='view_table.php?table=" . urlencode($table) . "'>$table</a></li>";
+        }
+        echo "</ul>";
+    } else {
+        echo "<p style='color:red;'>테이블 불러오기 실패: " . mysqli_error($conn) . "</p>";
+    }
+    ?>
+</div>
+
 </body>
 </html>
